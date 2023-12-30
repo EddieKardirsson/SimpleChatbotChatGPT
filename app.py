@@ -1,3 +1,4 @@
+import openai
 from openai import *
 import os   # used for local environmental variables
 
@@ -20,13 +21,21 @@ messages.append({"role": "system", "content": "you are a CTO mentoring developer
                                               "guiding questions"})
 messages.append({"role": "user", "content": "Why is my website slow?"})
 
-# make an api
-response = client.chat.completions.create(
-    messages=messages,
-    model="gpt-3.5-turbo",
-    temperature=0.5,
-    max_tokens=250
-)
+try:
+    # make an api
+    response = client.chat.completions.create(
+        messages=messages,
+        model="gpt-3.5-turbo",
+        temperature=0.5,
+        max_tokens=250
+    )
 
-# print the response
-print(response.choices[0].message.content)
+    # print the response
+    print(response.choices[0].message.content)
+
+# authentication issue
+except openai.AuthenticationError:
+    print("no valid token / authentication error")
+
+except openai.BadRequestError:
+    print("invalid request, read the manual!")

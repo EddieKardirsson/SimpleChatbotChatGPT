@@ -1,5 +1,6 @@
 from openai import *
 import os   # used for local environmental variables
+from wikipedia import *
 
 # Pass the api key
 # Get the key from environmental variable. Instructions:
@@ -14,27 +15,34 @@ client = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY")
 )
 
+# get user input
+title = input("title of the Wikipedia page: ")
+
+# get the wikipedia content
+page = wikipedia.page(
+    title=title,
+    auto_suggest=False
+)
+
 # define prompt
+prompt = "Write a summary of the following article: " + page.content[:10000]
 messages = []
-messages.append({"role": "system", "content": "you are a CTO mentoring developers, don't only provide answers also ask"
-                                              "guiding questions"})
-messages.append({"role": "user", "content": "Why is my website slow?"})
+messages.append({"role": "user", "content": prompt})
 
 try:
     # make an api
     response = client.chat.completions.create(
         messages=messages,
-        model="gpt-3.5-turbo",
-        temperature=0.5,
-        max_tokens=250
+        model="gpt-3.5-turbo"
     )
 
     # print the response
     print(response.choices[0].message.content)
 
 # authentication issue
-except openai.AuthenticationError:
+except OpenAI.AuthenticationError:
     print("no valid token / authentication error")
 
-except openai.BadRequestError:
+except OpenAI.BadRequestError as e:
     print("invalid request, read the manual!")
+    print(e)

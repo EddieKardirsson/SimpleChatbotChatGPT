@@ -15,15 +15,18 @@ client = OpenAI(
 )
 
 # define prompt
-message = {"role": "user", "content": "Why is my website down?"}
 messages = []
-messages.append(message)
+messages.append({"role": "system", "content": "you are a CTO mentoring developers, don't only provide answers also ask"
+                                              "guiding questions"})
+messages.append({"role": "user", "content": "Why is my website slow?"})
 
 # make an api
 response = client.chat.completions.create(
     messages=messages,
-    model="gpt-3.5-turbo"
+    model="gpt-3.5-turbo",
+    temperature=0.5,
+    max_tokens=250
 )
 
 # print the response
-print(response)
+print(response.choices[0].message.content)

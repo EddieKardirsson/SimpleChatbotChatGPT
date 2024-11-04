@@ -1,4 +1,5 @@
 from openai import *
+import openai
 import os   # used for local environmental variables
 
 # Pass the api key
@@ -25,8 +26,8 @@ try:
     response = client.chat.completions.create(
         messages=messages,
         model="gpt-3.5-turbo",
-        temperature=0.5,
-        max_tokens=250
+        temperature=0.9,
+        max_tokens=300
     )
 
     # print the response
